@@ -12,7 +12,7 @@ class LLMClient(Protocol):
         self,
         messages: list[Message],
         tools: list[dict[str, Any]] | None = None,
-    ) -> tuple[Message, dict[str, int]]:
+    ) -> tuple[Message, dict[str, Any]]:
         """
         Generate a response from the LLM.
 

@@ -123,6 +123,7 @@ markers = [
     "issue_8: LLM client abstraction & fake",
     "issue_9: LLM providers & cost tracking",
     "issue_10: Scratchpad & trace recorder",
+    "issue_11: ReAct loop & signal contract",
 ]
 
 # ---------------------------------------------------------------- coverage
