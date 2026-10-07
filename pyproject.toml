@@ -116,6 +116,7 @@ markers = [
     "issue_1: CI workflow (GitHub Actions)",
     "issue_2: Settings and domain models",
     "issue_3: Market data provider (Yahoo + fake)",
+    "issue_4: Technical indicators",
 ]
 
 # ---------------------------------------------------------------- coverage
