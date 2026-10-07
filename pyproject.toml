@@ -128,6 +128,7 @@ markers = [
     "issue_13: Paper broker & portfolio accounting",
     "issue_14: Decision & trace persistence",
     "issue_15: Episodic memory with pgvector",
+    "issue_16: Outcome reflection",
 ]
 
 # ---------------------------------------------------------------- coverage

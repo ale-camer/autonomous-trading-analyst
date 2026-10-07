@@ -11,6 +11,7 @@ from autonomous_trading_analyst.domain.models import (
     Signal,
     TraceStep,
 )
+from autonomous_trading_analyst.domain.reflection import ReflectionReport, ScoredOutcome
 
 __all__ = [
     "Action",
@@ -20,6 +21,8 @@ __all__ = [
     "OrderStatus",
     "PortfolioState",
     "Position",
+    "ReflectionReport",
+    "ScoredOutcome",
     "Signal",
     "TraceStep",
 ]

@@ -1,7 +1,7 @@
 """Episodic memory store providing vector persistence and similarity-based retrieval."""
 
 import uuid
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 
 import numpy as np
 from sqlalchemy import func, select
@@ -203,6 +203,50 @@ class EpisodicMemory:
                 msg = f"Episode with id '{episode_id}' not found."
                 raise ValueError(msg)
             ep.outcome_return = float(outcome_return)
+
+    def update_outcome_by_decision(self, decision_id: str, outcome_return: float) -> int:
+        """Update realized forward return for all episodes associated with a decision ID."""
+        with get_db_session(self.session_factory) as session:
+            stmt = select(EpisodeModel).where(EpisodeModel.decision_id == decision_id)
+            episodes = list(session.scalars(stmt).all())
+            for ep in episodes:
+                ep.outcome_return = float(outcome_return)
+            return len(episodes)
+
+    def list_pending_episodes(
+        self,
+        as_of: datetime | None = None,
+        horizon_days: int = 5,
+        limit: int = 50,
+    ) -> list[EpisodeRecord]:
+        """Return episodes lacking outcome returns that have passed the forward horizon."""
+        reference_time = as_of if as_of is not None else datetime.now(UTC)
+        cutoff_time = reference_time - timedelta(days=horizon_days)
+
+        with get_db_session(self.session_factory) as session:
+            stmt = (
+                select(EpisodeModel)
+                .where(
+                    EpisodeModel.outcome_return.is_(None),
+                    EpisodeModel.created_at <= cutoff_time,
+                )
+                .order_by(EpisodeModel.created_at.asc())
+                .limit(limit)
+            )
+            episodes = list(session.scalars(stmt).all())
+            return [
+                EpisodeRecord(
+                    episode_id=ep.episode_id,
+                    decision_id=ep.decision_id,
+                    ticker=ep.ticker,
+                    context_text=ep.context_text,
+                    action=ep.action,
+                    rationale=ep.rationale,
+                    outcome_return=ep.outcome_return,
+                    created_at=ep.created_at,
+                )
+                for ep in episodes
+            ]
 
     def get_episode(self, episode_id: str) -> EpisodeRecord | None:
         """Retrieve a single episode record by ID."""

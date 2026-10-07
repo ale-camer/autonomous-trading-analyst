@@ -1,6 +1,7 @@
 """Type-safe repository layer mapping domain entities to relational database models."""
 
 import uuid
+from datetime import UTC, datetime, timedelta
 from typing import Any
 
 from sqlalchemy import select
@@ -143,6 +144,30 @@ class DecisionRepository:
             model = session.get(DecisionModel, decision_id)
             if model:
                 model.realized_outcome = realized_outcome
+
+    def list_pending_reflection(
+        self,
+        as_of: datetime | None = None,
+        horizon_days: int = 5,
+        limit: int = 50,
+    ) -> list[DecisionRecord]:
+        """Return decisions lacking realized outcome that have passed the forward horizon."""
+        reference_time = as_of if as_of is not None else datetime.now(UTC)
+        cutoff_time = reference_time - timedelta(days=horizon_days)
+
+        with get_db_session(self.session_factory) as session:
+            stmt = (
+                select(DecisionModel)
+                .options(joinedload(DecisionModel.trace_steps))
+                .where(
+                    DecisionModel.realized_outcome.is_(None),
+                    DecisionModel.created_at <= cutoff_time,
+                )
+                .order_by(DecisionModel.created_at.asc())
+                .limit(limit)
+            )
+            models = session.scalars(stmt).unique().all()
+            return [self._to_domain(m) for m in models]
 
     @staticmethod
     def _to_domain(model: DecisionModel) -> DecisionRecord:
