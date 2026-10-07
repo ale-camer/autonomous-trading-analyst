@@ -129,6 +129,7 @@ markers = [
     "issue_14: Decision & trace persistence",
     "issue_15: Episodic memory with pgvector",
     "issue_16: Outcome reflection",
+    "issue_17: Analysis cycle orchestrator",
 ]
 
 # ---------------------------------------------------------------- coverage
