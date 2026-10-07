@@ -130,7 +130,7 @@ start-issue: ## Create TYPE/issue-ID-NAME from develop (ID=X NAME=short-name [TY
 	if ! [[ "$(ID)" =~ ^[0-9]+$$ ]]; then echo "ERROR: ID must be a number, got '$(ID)'." >&2; exit 1; fi
 	if ! [[ "$(NAME)" =~ ^[a-z0-9]+(-[a-z0-9]+)*$$ ]]; then echo "ERROR: NAME must be kebab-case, got '$(NAME)'." >&2; exit 1; fi
 	case "$(TYPE)" in feature|fix) ;; *) echo "ERROR: TYPE must be 'feature' or 'fix', got '$(TYPE)'." >&2; exit 1 ;; esac
-	if [ -n "$$(git status --porcelain)" ]; then echo "ERROR: working tree is not clean. Commit or stash first." >&2; exit 1; fi
+	if [ -n "$$(git status --porcelain --untracked-files=no)" ]; then echo "ERROR: working tree is not clean. Commit or stash first." >&2; exit 1; fi
 	git checkout $(BASE_BRANCH)
 	git pull --ff-only
 	git checkout -b "$(TYPE)/issue-$(ID)-$(NAME)"
