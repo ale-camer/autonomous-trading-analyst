@@ -104,6 +104,7 @@ testpaths = ["tests"]
 addopts = "-ra --strict-markers --strict-config"
 markers = [
     "issue_0: Day 0 setup and scaffolding",
+    "issue_1: CI workflow (GitHub Actions)",
 ]
 
 # ---------------------------------------------------------------- coverage
