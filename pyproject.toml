@@ -117,6 +117,7 @@ markers = [
     "issue_2: Settings and domain models",
     "issue_3: Market data provider (Yahoo + fake)",
     "issue_4: Technical indicators",
+    "issue_5: Anomaly signals (P-06 style)",
 ]
 
 # ---------------------------------------------------------------- coverage
