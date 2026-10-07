@@ -120,6 +120,7 @@ markers = [
     "issue_5: Anomaly signals (P-06 style)",
     "issue_6: P-09 research client",
     "issue_7: Tool registry and JSON schemas",
+    "issue_8: LLM client abstraction & fake",
 ]
 
 # ---------------------------------------------------------------- coverage
