@@ -122,6 +122,7 @@ markers = [
     "issue_7: Tool registry and JSON schemas",
     "issue_8: LLM client abstraction & fake",
     "issue_9: LLM providers & cost tracking",
+    "issue_10: Scratchpad & trace recorder",
 ]
 
 # ---------------------------------------------------------------- coverage
