@@ -98,6 +98,15 @@ init_forbid_extra = true
 init_typed = true
 warn_required_dynamic_aliases = true
 
+[[tool.mypy.overrides]]
+module = [
+    "yfinance.*",
+    "yfinance",
+    "pandas.*",
+    "pandas",
+]
+ignore_missing_imports = true
+
 # ---------------------------------------------------------------- pytest
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -106,6 +115,7 @@ markers = [
     "issue_0: Day 0 setup and scaffolding",
     "issue_1: CI workflow (GitHub Actions)",
     "issue_2: Settings and domain models",
+    "issue_3: Market data provider (Yahoo + fake)",
 ]
 
 # ---------------------------------------------------------------- coverage
