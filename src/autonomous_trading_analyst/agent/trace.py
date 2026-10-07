@@ -2,6 +2,7 @@ from typing import Any
 
 from pydantic import BaseModel, Field
 
+from autonomous_trading_analyst.agent.signal import TradingSignal
 from autonomous_trading_analyst.llm.messages import Message
 
 
@@ -17,7 +18,9 @@ class Scratchpad(BaseModel):
     """Short-term memory recording thoughts, tool calls, and observations for an episode."""
 
     system_prompt: Message | None = None
+    user_prompt: Message | None = None
     steps: list[TraceStep] = Field(default_factory=list)
+    signal: TradingSignal | None = None
 
     def add_step(self, step: TraceStep) -> None:
         """Add a new trace step to the scratchpad."""
@@ -28,6 +31,8 @@ class Scratchpad(BaseModel):
         messages: list[Message] = []
         if self.system_prompt:
             messages.append(self.system_prompt)
+        if self.user_prompt:
+            messages.append(self.user_prompt)
 
         for step in self.steps:
             messages.append(step.llm_message)
