@@ -127,6 +127,7 @@ markers = [
     "issue_12: Deterministic risk guardrails",
     "issue_13: Paper broker & portfolio accounting",
     "issue_14: Decision & trace persistence",
+    "issue_15: Episodic memory with pgvector",
 ]
 
 # ---------------------------------------------------------------- coverage
