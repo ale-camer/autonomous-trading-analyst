@@ -126,6 +126,7 @@ markers = [
     "issue_11: ReAct loop & signal contract",
     "issue_12: Deterministic risk guardrails",
     "issue_13: Paper broker & portfolio accounting",
+    "issue_14: Decision & trace persistence",
 ]
 
 # ---------------------------------------------------------------- coverage
