@@ -1,42 +1,65 @@
-# Plan: Issue 8 - LLM Client Abstraction & Fake
+# Issue 8: LLM Client Abstraction & Fake
 
-## 1. Contexto y Objetivos
-- **Issue**: [8 - LLM client abstraction & fake](https://github.com/ale-camer/autonomous-trading-analyst/issues/8)
-- **Milestone**: M2 - ReAct Agent Core
-- **Objetivo**: Crear una abstracción (`LLMClient`) independiente del proveedor (OpenAI, Anthropic, etc.) que normalice los mensajes, llamadas a herramientas (tools) y conteo de tokens. Además, desarrollar un `FakeLLMClient` que permita programar respuestas predefinidas para realizar tests unitarios y deterministas del ciclo ReAct del agente, sin incurrir en costos ni depender de APIs externas.
+**Branch**: `feature/issue-8-llm-client`
+**Status**: To Do
+**PR**: opened by `make finish-issue` → `develop` (Closes #8)
+**Milestone**: M2 - ReAct Agent Core
 
-## 2. Diseño de Componentes
+## Objective
+Provide a provider-agnostic `LLMClient` interface with normalized messages, tool definitions, tool calls, and token usage tracking. Implement a `FakeLLMClient` that accepts scripted responses to enable deterministic, fast, and cost-free unit testing for the agent core.
 
-### 2.1 Modelos de Mensajes (`src/autonomous_trading_analyst/llm/messages.py`)
-- Uso de **Pydantic** para definir la estructura unificada de los mensajes:
-  - `Role`: Enum con los roles (`system`, `user`, `assistant`, `tool`).
-  - `ToolCall`: Representa la intención del modelo de invocar una herramienta (ID, nombre, argumentos).
-  - `Message`: Contiene el `role`, el contenido en texto (`content`), identificadores de llamadas a herramientas (`tool_calls` para el assistant) y resoluciones (`tool_call_id` para el rol tool).
+## Acceptance Criteria
+- [ ] `src/autonomous_trading_analyst/llm/messages.py` implements Pydantic models for roles, messages, and tool calls.
+- [ ] `src/autonomous_trading_analyst/llm/client.py` defines the abstract `LLMClient` protocol/interface returning normalized messages and token metrics.
+- [ ] `src/autonomous_trading_analyst/llm/fake.py` implements `FakeLLMClient` capable of sequential mock responses and erroring out when exhausted.
+- [ ] `src/autonomous_trading_analyst/llm/__init__.py` re-exports the client and models.
+- [ ] `tests/unit/test_llm_fake.py` covers message structuring, sequential responses, and depletion errors (marked `@pytest.mark.issue_8`).
+- [ ] `pyproject.toml` registers the `issue_8` marker.
+- [ ] `make check` and `make test-issue ID=8` pass.
 
-### 2.2 Abstracción del Cliente (`src/autonomous_trading_analyst/llm/client.py`)
-- Definir un `Protocol` o `ABC` llamado `LLMClient`.
-- Método principal: 
-  `async def generate(messages: list[Message], tools: list[dict] | None = None) -> tuple[Message, dict]`
-  - Devuelve el siguiente mensaje del modelo y un diccionario (o modelo) con el uso de tokens (`prompt_tokens`, `completion_tokens`).
+## Implementation Tasks
 
-### 2.3 Cliente Falso / Mock (`src/autonomous_trading_analyst/llm/fake.py`)
-- Clase `FakeLLMClient` que implementa `LLMClient`.
-- Inicialización: Recibe una lista (o cola) pre-programada de respuestas (`list[Message]`).
-- Comportamiento: 
-  - En cada llamada a `generate()`, extrae (pop) el siguiente mensaje de la lista y lo devuelve.
-  - Genera métricas de tokens simuladas (opcional pero útil).
-  - Lanza un error explícito (ej. `RuntimeError("No more mock responses")`) si se le piden más respuestas de las configuradas.
-  - Puede incluir un registro interno de los mensajes recibidos (`self.received_messages`) para hacer aserciones (asserts) en los tests posteriores.
+### 1. Preparation & Branching
+```bash
+make start-issue ID=8 NAME=llm-client
+```
 
-## 3. Pruebas Unitarias (`tests/unit/test_llm_fake.py`)
-- Instanciar `FakeLLMClient` con una secuencia de respuestas esperadas.
-- Llamar iterativamente al método y verificar que las respuestas se retornan en orden.
-- Verificar el error por agotamiento de respuestas (cuando el agente entra en loop infinito accidental).
-- Validar que el cliente falso registra correctamente las entradas recibidas (historial de mensajes).
+### 2. Message Models
+- **File**: `src/autonomous_trading_analyst/llm/messages.py`
+- **Change**: Define `Role` (system, user, assistant, tool), `ToolCall`, and `Message` models using Pydantic for strict typing and validation across all providers.
 
-## 4. Pasos de Implementación
-1. Crear el paquete `src/autonomous_trading_analyst/llm/`.
-2. Implementar los modelos en `messages.py`.
-3. Implementar el contrato en `client.py`.
-4. Implementar la clase de simulación en `fake.py`.
-5. Escribir y pasar los tests unitarios.
+### 3. LLM Client Abstraction
+- **File**: `src/autonomous_trading_analyst/llm/client.py`
+- **Change**: Define `LLMClient` protocol with an async `generate` (or `chat`) method. It takes a list of `Message`s and an optional list of `ToolDefinition` dicts/schemas, returning a tuple of `(Message, dict)` for response and token usage.
+
+### 4. Fake LLM Client
+- **File**: `src/autonomous_trading_analyst/llm/fake.py`
+- **Change**: Implement `FakeLLMClient(LLMClient)` initialized with a list of mock responses. On each call, pop and return the next message. Raise `RuntimeError` if responses are exhausted. Record inputs in `self.received_messages` for later test assertions.
+
+### 5. LLM Package Interface
+- **File**: `src/autonomous_trading_analyst/llm/__init__.py`
+- **Change**: Re-export models, `LLMClient`, and `FakeLLMClient`.
+
+### 6. Fake LLM Unit Tests
+- **File**: `tests/unit/test_llm_fake.py`
+- **Change**: Test sequential delivery of mock messages, exhaustion error, and history tracking. Mark with `@pytest.mark.issue_8`.
+
+### 7. Pytest Marker Registration
+- **File**: `pyproject.toml`
+- **Change**: Register the `issue_8` marker (`issue_8: LLM client abstraction & fake`) under `[tool.pytest.ini_options]` `markers`.
+
+### 8. Verification & Quality Gates
+```bash
+make test-issue ID=8
+make check
+```
+
+### 9. Git & Issue Finish
+```bash
+make finish-issue ID=8 MSG="feat(llm): implement llm client abstraction and fake client"
+```
+
+## Decisions
+- Model schemas explicitly with Pydantic for provider translation later on (OpenAI vs Anthropic format mappings).
+- Maintain a fake client with a deterministic queue of responses to make the ReAct agent's loop testing entirely predictable and independent of external API latencies or costs.
+- Track received messages internally in `FakeLLMClient` to let tests assert what context the agent sent.
