@@ -124,6 +124,7 @@ markers = [
     "issue_9: LLM providers & cost tracking",
     "issue_10: Scratchpad & trace recorder",
     "issue_11: ReAct loop & signal contract",
+    "issue_12: Deterministic risk guardrails",
 ]
 
 # ---------------------------------------------------------------- coverage
