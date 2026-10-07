@@ -54,10 +54,12 @@ class Settings(BaseSettings):
     paper_commission_bps: float = Field(default=1.0, ge=0.0)
     paper_slippage_bps: float = Field(default=5.0, ge=0.0)
 
-    # --- Agent budgets ---
+    # --- Agent budgets & memory ---
     agent_max_steps: int = Field(default=8, ge=1)
     agent_max_cost_usd_per_decision: float = Field(default=0.05, ge=0.0)
     memory_top_k: int = Field(default=5, ge=1)
+    reflection_horizon_days: int = Field(default=5, ge=1)
+    reflection_batch_size: int = Field(default=50, ge=1)
 
     # --- GCP ---
     gcp_project_id: str | None = None

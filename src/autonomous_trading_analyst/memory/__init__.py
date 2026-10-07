@@ -8,6 +8,7 @@ from autonomous_trading_analyst.memory.embeddings import (
     get_embedding_client,
 )
 from autonomous_trading_analyst.memory.models import EpisodeModel, EpisodeRecord
+from autonomous_trading_analyst.memory.reflection import OutcomeReflector
 from autonomous_trading_analyst.memory.store import EpisodicMemory
 from autonomous_trading_analyst.memory.tool import (
     RecallMemoryArgs,
@@ -23,6 +24,7 @@ __all__ = [
     "FakeEmbeddingClient",
     "GeminiEmbeddingClient",
     "OpenAIEmbeddingClient",
+    "OutcomeReflector",
     "RecallMemoryArgs",
     "build_recall_memory_tool",
     "get_embedding_client",
