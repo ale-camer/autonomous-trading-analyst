@@ -105,6 +105,7 @@ addopts = "-ra --strict-markers --strict-config"
 markers = [
     "issue_0: Day 0 setup and scaffolding",
     "issue_1: CI workflow (GitHub Actions)",
+    "issue_2: Settings and domain models",
 ]
 
 # ---------------------------------------------------------------- coverage
