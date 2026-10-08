@@ -137,6 +137,7 @@ markers = [
     "issue_19: Baseline strategies",
     "issue_20: Point-in-time backtest engine",
     "issue_21: Backtest report & CLI",
+    "issue_22: FastAPI agent & portfolio API",
 ]
 
 # ---------------------------------------------------------------- coverage
