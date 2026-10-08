@@ -140,6 +140,7 @@ markers = [
     "issue_21: Backtest report & CLI",
     "issue_22: FastAPI agent & portfolio API",
     "issue_23: Airflow trading-cycle DAG",
+    "issue_24: Docker & Compose stack",
 ]
 
 # ---------------------------------------------------------------- coverage
