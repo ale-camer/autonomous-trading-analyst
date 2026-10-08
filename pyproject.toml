@@ -131,6 +131,7 @@ markers = [
     "issue_16: Outcome reflection",
     "issue_17: Analysis cycle orchestrator",
     "issue_18: Performance metrics",
+    "issue_19: Baseline strategies",
 ]
 
 # ---------------------------------------------------------------- coverage
