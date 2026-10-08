@@ -14,6 +14,9 @@ dependencies = [
     "pydantic-settings>=2.3",
 ]
 
+[project.scripts]
+backtest = "autonomous_trading_analyst.evaluation.cli:main"
+
 [project.optional-dependencies]
 dev = [
     "ruff>=0.6",
@@ -133,6 +136,7 @@ markers = [
     "issue_18: Performance metrics",
     "issue_19: Baseline strategies",
     "issue_20: Point-in-time backtest engine",
+    "issue_21: Backtest report & CLI",
 ]
 
 # ---------------------------------------------------------------- coverage
