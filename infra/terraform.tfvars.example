@@ -1,0 +1,6 @@
+project_id    = "your-gcp-project-id"
+region        = "europe-west1"
+bucket_name   = "autonomous-trading-analyst-artifacts-dev"
+environment   = "dev"
+storage_class = "STANDARD"
+force_destroy = true

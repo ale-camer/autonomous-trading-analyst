@@ -107,6 +107,9 @@ module = [
     "yfinance",
     "pandas.*",
     "pandas",
+    "google.*",
+    "google.cloud.*",
+    "google.cloud",
 ]
 ignore_missing_imports = true
 
@@ -141,6 +144,7 @@ markers = [
     "issue_22: FastAPI agent & portfolio API",
     "issue_23: Airflow trading-cycle DAG",
     "issue_24: Docker & Compose stack",
+    "issue_25: GCS artifact store & Terraform",
 ]
 
 # ---------------------------------------------------------------- coverage
