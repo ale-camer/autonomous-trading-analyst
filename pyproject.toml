@@ -132,6 +132,7 @@ markers = [
     "issue_17: Analysis cycle orchestrator",
     "issue_18: Performance metrics",
     "issue_19: Baseline strategies",
+    "issue_20: Point-in-time backtest engine",
 ]
 
 # ---------------------------------------------------------------- coverage

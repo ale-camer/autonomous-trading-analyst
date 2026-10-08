@@ -1,8 +1,8 @@
-"""Data models representing individual trade records and evaluated performance metrics."""
+"""Data models representing trades, evaluated metrics, and backtest execution results."""
 
 from datetime import datetime
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 
 class TradeRecord(BaseModel):
@@ -54,3 +54,47 @@ class PerformanceMetrics(BaseModel):
     cost_per_decision: float = 0.0
     total_tokens: int = 0
     tokens_per_decision: float = 0.0
+
+
+class BacktestConfig(BaseModel):
+    """Configuration specification for a point-in-time backtest simulation."""
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    watchlist: list[str]
+    start_date: datetime
+    end_date: datetime
+    initial_cash: float = Field(default=100000.0, gt=0.0)
+    risk_free_rate: float = Field(default=0.0, ge=0.0)
+
+    @field_validator("watchlist")
+    @classmethod
+    def validate_watchlist(cls, v: list[str]) -> list[str]:
+        """Normalize tickers to uppercase and ensure non-empty watchlist."""
+        clean = [s.strip().upper() for s in v if s.strip()]
+        if not clean:
+            msg = "Watchlist cannot be empty"
+            raise ValueError(msg)
+        return clean
+
+    @model_validator(mode="after")
+    def validate_dates(self) -> "BacktestConfig":
+        """Verify start_date is before or equal to end_date."""
+        if self.start_date > self.end_date:
+            msg = f"start_date ({self.start_date}) cannot be after end_date ({self.end_date})"
+            raise ValueError(msg)
+        return self
+
+
+class BacktestResult(BaseModel):
+    """Immutable aggregate output of a point-in-time backtest."""
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    config: BacktestConfig
+    timestamps: list[datetime]
+    agent_metrics: PerformanceMetrics
+    agent_equity: list[float]
+    baseline_metrics: dict[str, PerformanceMetrics]
+    baseline_equities: dict[str, list[float]]
+    total_cycles: int = 0
