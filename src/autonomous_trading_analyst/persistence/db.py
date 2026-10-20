@@ -11,7 +11,18 @@ from autonomous_trading_analyst.persistence.models import Base
 
 def create_db_engine(url: str, echo: bool = False) -> Engine:
     """Create a SQLAlchemy Engine configured for application or testing workloads."""
-    return create_engine(url, echo=echo, future=True)
+    import re
+    clean_url = re.sub(r"^postgres(ql)?(\+[a-zA-Z0-9_]+)?://", "postgresql+psycopg://", url) if not url.startswith("sqlite") else url
+    engine = create_engine(clean_url, echo=echo, future=True)
+
+    if not clean_url.startswith("sqlite"):
+        from sqlalchemy import event
+        @event.listens_for(engine, "connect")
+        def set_search_path(dbapi_connection, connection_record):
+            with dbapi_connection.cursor() as cur:
+                cur.execute("SET search_path TO p10_trading, public;")
+
+    return engine
 
 
 def get_session_factory(engine: Engine) -> sessionmaker[Session]:

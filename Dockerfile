@@ -36,4 +36,8 @@ EXPOSE 8080
 HEALTHCHECK --interval=10s --timeout=5s --start-period=10s --retries=5 \
     CMD curl -f http://localhost:8080/health || exit 1
 
+COPY --chown=trader:trader entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+# Default execution launches uvicorn via entrypoint
+ENTRYPOINT ["/entrypoint.sh"]
 CMD ["uvicorn", "autonomous_trading_analyst.api:app", "--host", "0.0.0.0", "--port", "8080"]
