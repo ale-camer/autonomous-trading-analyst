@@ -37,7 +37,11 @@ def get_session_factory_dep(
     global _engine_instance, _session_factory_instance
     if _session_factory_instance is None:
         _engine_instance = create_db_engine(settings.database_url)
-        init_db(_engine_instance)
+        try:
+            init_db(_engine_instance)
+        except Exception as exc:
+            import logging
+            logging.getLogger(__name__).warning("init_db failed or skipped during startup: %s", exc)
         _session_factory_instance = get_session_factory(_engine_instance)
     return _session_factory_instance
 

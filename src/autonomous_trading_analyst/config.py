@@ -1,6 +1,7 @@
 """Application settings and configuration management."""
 
 import functools
+import re
 from typing import Any, Literal
 
 from pydantic import Field, SecretStr, field_validator
@@ -35,7 +36,17 @@ class Settings(BaseSettings):
     embedding_dim: int = 1536
 
     # --- Database ---
+    db_schema: str = "p10_trading"
     database_url: str = "postgresql+psycopg://trader:trader@localhost:5432/trading"
+
+    @field_validator("database_url", mode="before")
+    @classmethod
+    def normalize_database_url(cls, v: Any) -> Any:
+        if isinstance(v, str) and v.startswith("postgres://"):
+            return re.sub(r"^postgres://", "postgresql+psycopg://", v)
+        if isinstance(v, str) and v.startswith("postgresql://"):
+            return re.sub(r"^postgresql://", "postgresql+psycopg://", v)
+        return v
 
     # --- Agent tools ---
     research_api_url: str = "http://localhost:8000"
